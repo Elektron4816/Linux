@@ -1,0 +1,15 @@
+#!/bin/bash
+
+total_folders=$(find $dir -type d | wc -l)
+top_5_folders=$(du -h $dir | sort -hr | head -5 | awk '{ print FNR " - " $2 ", " $1 }' )
+total_files=$(find $dir -type f | wc -l)
+conf_files=$(find $dir -type f | grep .conf | wc -l)
+text_files=$(find $dir -type f | grep .txt | wc -l)
+execut_files=$(find $dir -executable -type f | wc -l)
+log_files=$(find $dir -type f | grep .log | wc -l)
+archive_files=$(find $dir -type f | grep -e .zip -e .rar -e .tar | wc -l)
+symb_files=$(find $dir -type l | wc -l)
+top_10_weight_files=$(find $dir -type f -exec du -h {} \; | sort -hr | head -10 | awk -F '.' '{ print $0 " " $NF }' | awk '{ print FNR " - " $2 ", " $3 ", " $1 }')
+top_10_exe_namefile_sort=$(find $dir -executable -type f -exec du -h {} \; | sort -hr | head -10 | awk '{print $2}')
+top_10_exe_file=$(find $dir -executable -type f -exec du -h {} \; | sort -hr | head -10 | awk '{ print FNR " - " $2 ", " $1 ", " }')
+top_10_sha=$(md5sum $top_10_exe_namefile_sort | awk '{ print $1 }')
