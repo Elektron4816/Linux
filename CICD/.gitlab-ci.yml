@@ -1,0 +1,52 @@
+stages:
+  - style
+  - build
+  - test
+  - deploy
+
+style_stage:
+  stage: style
+  tags:
+  - style
+  script:
+  - src/style_test.sh
+  after_script:
+  - src/notifications.sh
+
+build_stage:
+  stage: build
+  tags:
+  - build
+  script:
+  - cd src/cat/
+  - make
+  - cd ../grep/
+  - make
+  artifacts:
+    paths: 
+    - src/cat/
+    - src/grep/
+    expire_in: 30 days
+  after_script:
+  - src/notifications.sh
+
+test_stage:
+  stage: test
+  tags:
+  - test
+  script:
+  - src/cat/test_func_cat.sh
+  - src/grep/test/test_grep.sh
+  after_script:
+  - src/notifications.sh
+
+deploy_stage:
+  stage: deploy
+  tags:
+  - deploy
+  when: manual
+  script:
+  - chmod 777 src/deploy.sh
+  - src/deploy.sh
+  after_script:
+  - src/notifications.sh
